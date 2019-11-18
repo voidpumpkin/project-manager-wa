@@ -8,7 +8,7 @@ import { RegistrationPage } from './pages/Registration';
 const Router = () => (
     <Switch>
         <Route path="/login" component={LoginPage} />
-        <PrivateRoute path="/register" component={RegistrationPage} />
+        <Route path="/register" component={RegistrationPage} />
         <PrivateRoute path="/" component={HomePage} />
     </Switch>
 );
