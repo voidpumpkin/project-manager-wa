@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuthDataContext } from './AuthDataContext';
+import { useAuthDataContext } from '../../AuthDataContext';
 
 const LoginPage = () => {
     const { onLogin } = useAuthDataContext();
