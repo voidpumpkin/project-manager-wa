@@ -1,26 +1,29 @@
 {
-  "name": "project-manager-wa",
-  "version": "1.0.0",
-  "description": "Project manages web app",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "build": "parcel build ./public/index.html",
-    "dev": "parcel ./public/index.html --port 3061"
-  },
-  "repository": "https://github.com/voidpumpkin/project-manager-wa.git",
-  "author": "voidpumpkin <32368314+voidpumpkin@users.noreply.github.com>",
-  "license": "MIT",
-  "dependencies": {
-    "eslint": "^6.6.0",
-    "eslint-config-voidpumpkin": "https://github.com/voidpumpkin/eslint-config-voidpumpkin.git",
-    "eslint-plugin-react": "^7.16.0",
-    "koa": "^2.11.0",
-    "koa-static": "^5.0.0",
-    "parcel": "^1.12.4",
-    "prettier": "^1.19.1",
-    "react": "^16.0.0",
-    "react-dom": "^16.12.0",
-    "react-router-dom": "^5.1.2"
-  }
+    "name": "project-manager-wa",
+    "version": "1.0.0",
+    "description": "Project manages web app",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "build": "parcel build ./public/index.html",
+        "dev": "parcel ./public/index.html --port 3061"
+    },
+    "repository": "https://github.com/voidpumpkin/project-manager-wa.git",
+    "author": "voidpumpkin <32368314+voidpumpkin@users.noreply.github.com>",
+    "license": "MIT",
+    "dependencies": {
+        "@babel/core": "^7.7.2",
+        "@babel/plugin-transform-runtime": "^7.6.2",
+        "dotenv": "^8.2.0",
+        "eslint": "^6.6.0",
+        "eslint-config-voidpumpkin": "https://github.com/voidpumpkin/eslint-config-voidpumpkin.git",
+        "eslint-plugin-react": "^7.16.0",
+        "koa": "^2.11.0",
+        "koa-static": "^5.0.0",
+        "parcel": "^1.12.4",
+        "prettier": "^1.19.1",
+        "react": "^16.0.0",
+        "react-dom": "^16.12.0",
+        "react-router-dom": "^5.1.2"
+    }
 }

@@ -2,18 +2,19 @@ import React, { createContext, useState, useMemo, useContext, useCallback } from
 
 const AuthDataContext = createContext(null);
 
+const initialAuthData = localStorage['userId'] ? parseInt(localStorage['userId'], 10) : undefined;
 const AuthDataProvider = props => {
-    const [authData, setAuthData] = useState(JSON.parse(localStorage['authData'] || '{}'));
+    const [authData, setAuthData] = useState(initialAuthData);
 
     const onLogout = useCallback(() => {
-        localStorage.removeItem('authData');
-        setAuthData('{}');
+        localStorage.removeItem('userId');
+        setAuthData(initialAuthData);
     }, [setAuthData]);
 
     const onLogin = useCallback(
-        data => {
-            localStorage.setItem('authData', JSON.stringify(data));
-            setAuthData(data);
+        userId => {
+            localStorage.setItem('userId', userId);
+            setAuthData(userId);
         },
         [setAuthData]
     );

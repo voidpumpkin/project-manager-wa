@@ -4,7 +4,7 @@ import { useAuthDataContext } from './AuthDataContext';
 
 const PrivateRoute = props => {
     const { component: Component, ...rest } = props;
-    const { userId } = useAuthDataContext();
+    const userId = useAuthDataContext();
     console.log(userId);
 
     return (
