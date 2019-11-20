@@ -1,8 +1,9 @@
-import React, { createContext, useState, useMemo, useContext, useCallback } from 'react';
+import React, { createContext, useState, useMemo, useCallback } from 'react';
 
 const AuthDataContext = createContext(null);
 
 const initialAuthData = localStorage['userId'] ? parseInt(localStorage['userId'], 10) : undefined;
+
 const AuthDataProvider = props => {
     const [authData, setAuthData] = useState(initialAuthData);
 
@@ -26,6 +27,4 @@ const AuthDataProvider = props => {
     return <AuthDataContext.Provider value={authDataValue} {...props} />;
 };
 
-const useAuthDataContext = () => useContext(AuthDataContext);
-
-export { AuthDataContext, AuthDataProvider, useAuthDataContext };
+export { AuthDataContext, AuthDataProvider };

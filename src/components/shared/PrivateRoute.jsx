@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Route, Redirect } from 'react-router-dom';
-import { useAuthDataContext } from './AuthDataContext';
+import { AuthDataContext } from './AuthDataContext';
 
 const PrivateRoute = props => {
     const { component: Component, ...rest } = props;
-    const userId = useAuthDataContext();
+    const userId = useContext(AuthDataContext);
     console.log(userId);
 
     return (

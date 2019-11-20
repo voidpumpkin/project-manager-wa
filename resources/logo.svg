@@ -1,0 +1,26 @@
+<svg width="1661" height="264" xmlns="http://www.w3.org/2000/svg">
+ <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="266" width="1663" y="-1" x="-1"/>
+  <g display="none" overflow="visible" y="0" x="0" height="100%" width="100%" id="canvasGrid">
+   <rect fill="url(#gridpattern)" stroke-width="0" y="0" x="0" height="100%" width="100%"/>
+  </g>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <g id="svg_13">
+   <g transform="matrix(4.340277446640869,0,0,4.340277446640869,0,0) " id="svg_4">
+    <path fill="#ff4081" id="svg_6" d="m8.335996,42.568001l46,0l0,2l-46,0l0,-2z"/>
+    <path fill="#ff4081" id="svg_7" d="m12.335996,38.568001l38,0l0,2l-38,0l0,-2z"/>
+    <path fill="#ff4081" id="svg_8" d="m12.335996,46.568001l38,0l0,2l-38,0l0,-2z"/>
+    <path fill="#ff4081" id="svg_9" d="m59.335996,28.568001l-6.548,0a14.989,14.989 0 0 0 -7.452,-28l-44,0a1,1 0 0 0 -1,1l0,4a1,1 0 0 0 1,1l1,0l0,18l-1,0a1,1 0 0 0 -1,1l0,4a1,1 0 0 0 1,1l6.548,0a14.989,14.989 0 0 0 7.452,28l44,0a1,1 0 0 0 1,-1l0,-4a1,1 0 0 0 -1,-1l-1,0l0,-18l1,0a1,1 0 0 0 1,-1l0,-4a1,1 0 0 0 -1,-1zm-55,-22l41,0a9,9 0 0 1 0,18l-41,0l0,-18zm-2,22l0,-2l43,0a11,11 0 0 0 0,-22l-43,0l0,-2l43,0a13,13 0 0 1 0,26l-43,0zm54,24l-41,0a9,9 0 0 1 0,-18l41,0l0,18zm2,-20l-43,0a11,11 0 0 0 0,22l43,0l0,2l-43,0a13,13 0 0 1 0,-26l43,0l0,2z"/>
+    <path fill="#ff4081" id="svg_10" d="m6.335996,14.568001l46,0l0,2l-46,0l0,-2z"/>
+    <path fill="#ff4081" id="svg_11" d="m10.335996,10.568001l38,0l0,2l-38,0l0,-2z"/>
+    <path fill="#ff4081" id="svg_12" d="m10.335996,18.568001l38,0l0,2l-38,0l0,-2z"/>
+   </g>
+  </g>
+  <text xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="187" id="svg_14" y="202.999999" x="283.001264" stroke-width="0" stroke="#000" fill="#ff4081">Project Manager</text>
+ </g>
+</svg>
