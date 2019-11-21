@@ -5,25 +5,25 @@ const AuthDataContext = createContext(null);
 const initialAuthData = localStorage['userId'] ? parseInt(localStorage['userId'], 10) : undefined;
 
 const AuthDataProvider = props => {
-    const [authData, setAuthData] = useState(initialAuthData);
+    const [userId, setUserId] = useState(initialAuthData);
 
     const onLogout = useCallback(() => {
         localStorage.removeItem('userId');
-        setAuthData(initialAuthData);
-    }, [setAuthData]);
+        setUserId(undefined);
+    }, [setUserId]);
 
     const onLogin = useCallback(
         userId => {
             localStorage.setItem('userId', userId);
-            setAuthData(userId);
+            setUserId(userId);
         },
-        [setAuthData]
+        [setUserId]
     );
 
     const authDataValue = useMemo(() => {
-        return { ...authData, onLogin, onLogout };
-    }, [authData, onLogin, onLogout]);
-
+        const isLoggedIn = !!userId;
+        return { userId, isLoggedIn, onLogin, onLogout };
+    }, [userId, onLogin, onLogout]);
     return <AuthDataContext.Provider value={authDataValue} {...props} />;
 };
 

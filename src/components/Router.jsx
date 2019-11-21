@@ -11,12 +11,14 @@ const PAGE_PATHS = {
     HOME: '/'
 };
 
-const Router = () => (
-    <Switch>
-        <Route path={PAGE_PATHS.LOGIN} component={LoginPage} />
-        <Route path={PAGE_PATHS.REGISTRATION} component={RegistrationPage} />
-        <PrivateRoute path={PAGE_PATHS.HOME} component={HomePage} />
-    </Switch>
-);
+const Router = () => {
+    return (
+        <Switch>
+            <Route path={PAGE_PATHS.LOGIN} component={LoginPage} />
+            <Route path={PAGE_PATHS.REGISTRATION} component={RegistrationPage} />
+            <PrivateRoute path={PAGE_PATHS.HOME} component={HomePage} />
+        </Switch>
+    );
+};
 
 export { Router, PAGE_PATHS };

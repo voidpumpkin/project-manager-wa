@@ -19,20 +19,17 @@ const LoginPage = () => {
             console.log(userResponse);
             if (!loginResponse.errors) {
                 const {
-                    user: { id: userId }
+                    user: { id }
                 } = userResponse;
-                onLogin(userId);
+                onLogin(id);
             }
         }
     };
 
     return (
-        <>
-            {/* <h1>LoginPage</h1> */}
-            <Button variant="contained" color="primary" onClick={e => onClick(e)}>
-                Login
-            </Button>
-        </>
+        <Button variant="contained" color="primary" onClick={e => onClick(e)}>
+            Login
+        </Button>
     );
 };
 

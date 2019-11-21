@@ -4,13 +4,11 @@ import { AuthDataContext } from './AuthDataContext';
 
 const PrivateRoute = props => {
     const { component: Component, ...rest } = props;
-    const userId = useContext(AuthDataContext);
-    console.log(userId);
-
+    const { isLoggedIn } = useContext(AuthDataContext);
     return (
         <Route
             {...rest}
-            render={props => (userId ? <Component {...props} /> : <Redirect to="/login" />)}
+            render={props => (isLoggedIn ? <Component {...props} /> : <Redirect to="/login" />)}
         />
     );
 };
