@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { LayoutContext } from '../../layout';
+import { LayoutDataContext } from '../../layout/LayoutDataContext';
 import { AuthDataContext } from '../../shared/AuthDataContext';
 import { postLoginFetch } from '../../../services/Auth';
 import { getUserFetch } from '../../../services/User';
@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 
 const LoginPage = () => {
     const { onLogin } = useContext(AuthDataContext);
-    const { setPageTitle } = useContext(LayoutContext);
+    const { setPageTitle } = useContext(LayoutDataContext);
     useEffect(() => setPageTitle('Login'), []);
 
     const onClick = async () => {

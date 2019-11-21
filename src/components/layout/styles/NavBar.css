@@ -10,3 +10,6 @@
 .logoRightBorder {
     border-right: 0.1em solid rgba(0, 0, 0, 0.12);
 }
+.appBar {
+    position: sticky !important;
+}

@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import logo from '../../../resources/logo.svg';
+import { LayoutDataContext } from './LayoutDataContext';
 
 //components
 import AppBar from '@material-ui/core/AppBar';
@@ -14,8 +15,8 @@ import { NavList } from './NavList';
 
 import styles from './styles/NavBar';
 
-const NavBar = props => {
-    const { pageTitle } = props;
+const NavBar = () => {
+    const { pageTitle } = useContext(LayoutDataContext);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const toggleDrawer = isOpen => event => {
@@ -33,7 +34,7 @@ const NavBar = props => {
                 </Box>
                 <NavList />
             </Drawer>
-            <AppBar>
+            <AppBar className={styles.appBar}>
                 <Toolbar justify="content-between">
                     <Hidden mdUp>
                         <IconButton

@@ -1,25 +1,24 @@
-import React, { useState, createContext } from 'react';
+import React from 'react';
 
 //compoennts
+import Box from '@material-ui/core/Box';
 import { NavBar } from './NavBar';
+import { Footer } from './Footer';
 
-const LayoutContext = createContext();
+import styles from './styles/Layout.css';
+import { LayoutDataProvider } from './LayoutDataContext';
 
 const Layout = props => {
     const { children } = props;
-    const [pageTitle, setPageTitle] = useState('NoTitle');
-
     return (
-        <>
-            <NavBar pageTitle={pageTitle} />
-            <main role="main">
-                <LayoutContext.Provider value={{ setPageTitle }}>{children}</LayoutContext.Provider>
-            </main>
-            <footer role="contentinfo">
-                <p>Put copyright, etc. here.</p>
-            </footer>
-        </>
+        <LayoutDataProvider>
+            <NavBar />
+            <Box component="main" className={styles.main}>
+                {children}
+            </Box>
+            <Footer />
+        </LayoutDataProvider>
     );
 };
 
-export { Layout, LayoutContext };
+export { Layout };

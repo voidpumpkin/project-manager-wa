@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { PAGE_PATHS } from '../Router';
 import classNames from 'classnames';
+import { LayoutDataContext } from './LayoutDataContext';
 
 //components
 import HouseIcon from '@material-ui/icons/House';
@@ -11,15 +12,10 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 
-//hooks
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-
 import styles from './styles/NavList.css';
 
 const NavList = () => {
-    const theme = useTheme();
-    const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
+    const { isMdUp } = useContext(LayoutDataContext);
     return (
         <List component="nav" className={classNames({ [styles.horizontalList]: isMdUp })}>
             <ListItem button component="a" href={PAGE_PATHS.LOGIN}>

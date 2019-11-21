@@ -1,8 +1,8 @@
 import React, { useEffect, useContext } from 'react';
-import { LayoutContext } from '../../layout';
+import { LayoutDataContext } from '../../layout/LayoutDataContext';
 
 const RegistrationPage = () => {
-    const { setPageTitle } = useContext(LayoutContext);
+    const { setPageTitle } = useContext(LayoutDataContext);
     useEffect(() => setPageTitle('Registration'), []);
     return <h1>Registration</h1>;
 };

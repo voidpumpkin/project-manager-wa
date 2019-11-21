@@ -1,15 +1,56 @@
 import React, { useEffect, useContext } from 'react';
-import { LayoutContext } from '../../layout';
+import { LayoutDataContext } from '../../layout/LayoutDataContext';
 import { AuthDataContext } from '../../shared/AuthDataContext';
+
+//components
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
 const HomePage = () => {
     const { onLogout } = useContext(AuthDataContext);
-    const { setPageTitle } = useContext(LayoutContext);
+    const { setPageTitle } = useContext(LayoutDataContext);
     useEffect(() => setPageTitle('Home'), []);
     return (
         <>
-            {/* <h1>HomePage</h1> */}
+            <Typography variant="h2" component="h2">
+                HomePage
+            </Typography>{' '}
+            <Typography variant="h2" component="h2">
+                HomePage
+            </Typography>{' '}
+            <Typography variant="h2" component="h2">
+                HomePage
+            </Typography>{' '}
+            <Typography variant="h2" component="h2">
+                HomePage
+            </Typography>{' '}
+            <Typography variant="h2" component="h2">
+                HomePage
+            </Typography>{' '}
+            <Typography variant="h2" component="h2">
+                HomePage
+            </Typography>{' '}
+            <Typography variant="h2" component="h2">
+                HomePage
+            </Typography>{' '}
+            <Typography variant="h2" component="h2">
+                HomePage
+            </Typography>{' '}
+            <Typography variant="h2" component="h2">
+                HomePage
+            </Typography>{' '}
+            <Typography variant="h2" component="h2">
+                HomePage
+            </Typography>{' '}
+            <Typography variant="h2" component="h2">
+                HomePage
+            </Typography>{' '}
+            <Typography variant="h2" component="h2">
+                HomePage
+            </Typography>{' '}
+            <Typography variant="h2" component="h2">
+                HomePage
+            </Typography>
             <Button variant="contained" color="primary" onClick={() => onLogout()}>
                 Logout
             </Button>
