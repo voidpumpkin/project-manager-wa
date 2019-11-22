@@ -1,5 +1,5 @@
 import React from 'react';
-import { MUITheme } from './styles/MUITheme';
+import { MUITheme } from './MUITheme';
 
 //components
 import { AuthDataProvider } from './shared/AuthDataContext';
@@ -7,23 +7,19 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter } from 'react-router-dom';
 import { Router } from './Router';
 import { Layout } from './layout';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { CssBaseline } from '@material-ui/core';
 
-const App = () => {
-    return (
-        <>
-            <CssBaseline />
-            <BrowserRouter>
-                <AuthDataProvider>
-                    <ThemeProvider theme={MUITheme}>
-                        <Layout>
-                            <Router />
-                        </Layout>
-                    </ThemeProvider>
-                </AuthDataProvider>
-            </BrowserRouter>
-        </>
-    );
-};
+const App = () => (
+    <ThemeProvider theme={MUITheme}>
+        <CssBaseline />
+        <BrowserRouter>
+            <AuthDataProvider>
+                <Layout>
+                    <Router />
+                </Layout>
+            </AuthDataProvider>
+        </BrowserRouter>
+    </ThemeProvider>
+);
 
 export { App };

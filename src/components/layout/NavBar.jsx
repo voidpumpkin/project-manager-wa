@@ -1,21 +1,31 @@
 import React, { useState, useContext } from 'react';
 import logo from '../../../resources/logo.svg';
 import { LayoutDataContext } from './LayoutDataContext';
-
-//components
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
+import { AppBar, Toolbar, Typography, IconButton, Drawer, Hidden, Box } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import Typography from '@material-ui/core/Typography';
-import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
-import Box from '@material-ui/core/Box';
 import { NavList } from './NavList';
+import { makeStyles } from '@material-ui/core/styles';
 
-import styles from './styles/NavBar';
+const useStyles = makeStyles({
+    logo: {
+        width: '100%'
+    },
+    drawerLogo: {
+        width: '100%'
+    },
+    logoBottomBorder: {
+        borderBottom: '0.1em solid rgba(0, 0, 0, 0.12)'
+    },
+    logoRightBorder: {
+        borderRight: '0.1em solid rgba(0, 0, 0, 0.12)'
+    },
+    appBar: {
+        position: 'sticky'
+    }
+});
 
 const NavBar = () => {
+    const classes = useStyles();
     const { pageTitle } = useContext(LayoutDataContext);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -29,12 +39,12 @@ const NavBar = () => {
     return (
         <>
             <Drawer open={isDrawerOpen} onClose={toggleDrawer(false)}>
-                <Box className={styles.logoBottomBorder} width="16em" p={1}>
-                    <img src={logo} alt="Project manager logo" className={styles.drawerLogo}></img>
+                <Box className={classes.logoBottomBorder} width="16em" p={1}>
+                    <img src={logo} alt="Project manager logo" className={classes.drawerLogo}></img>
                 </Box>
                 <NavList />
             </Drawer>
-            <AppBar className={styles.appBar}>
+            <AppBar className={classes.appBar}>
                 <Toolbar justify="content-between">
                     <Hidden mdUp>
                         <IconButton
@@ -48,11 +58,11 @@ const NavBar = () => {
                         </IconButton>
                     </Hidden>
                     <Hidden smDown>
-                        <Box className={styles.logoRightBorder} width="16em" p={1}>
+                        <Box className={classes.logoRightBorder} width="16em" p={1}>
                             <img
                                 src={logo}
                                 alt="Project manager logo"
-                                className={styles.logo}
+                                className={classes.logo}
                             ></img>
                         </Box>
                     </Hidden>{' '}

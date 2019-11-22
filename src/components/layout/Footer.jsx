@@ -6,7 +6,7 @@ import Box from '@material-ui/core/Box';
 
 const Footer = () => {
     return (
-        <Box component="footer" bgcolor="primary.dark" p={2}>
+        <Box component="footer" bgcolor="primary.dark" color="primary.contrastText" p={2}>
             <Typography variant="body2" component="p">
                 <Box fontWeight="fontWeightBold" component="span">
                     DISCLAIMER:
