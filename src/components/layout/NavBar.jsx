@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import logo from '../../../resources/logo.svg';
-import { LayoutDataContext } from './LayoutDataContext';
+import { LayoutDataContext } from './';
 import { AppBar, Toolbar, Typography, IconButton, Drawer, Hidden, Box } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { NavList } from './NavList';
@@ -26,7 +26,9 @@ const useStyles = makeStyles({
 
 const NavBar = () => {
     const classes = useStyles();
-    const { pageTitle } = useContext(LayoutDataContext);
+    const {
+        pageSettings: { hideLayout, pageTitle }
+    } = useContext(LayoutDataContext);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const toggleDrawer = isOpen => event => {
@@ -35,8 +37,7 @@ const NavBar = () => {
         }
         setIsDrawerOpen(isOpen);
     };
-
-    return (
+    return hideLayout ? null : (
         <>
             <Drawer open={isDrawerOpen} onClose={toggleDrawer(false)}>
                 <Box className={classes.logoBottomBorder} width="16em" p={1}>

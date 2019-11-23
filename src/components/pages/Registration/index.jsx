@@ -1,9 +1,15 @@
 import React, { useEffect, useContext } from 'react';
-import { LayoutDataContext } from '../../layout/LayoutDataContext';
+import { LayoutDataContext } from '../../layout';
 
 const RegistrationPage = () => {
-    const { setPageTitle } = useContext(LayoutDataContext);
-    useEffect(() => setPageTitle('Registration'), []);
+    const { initializeLayout } = useContext(LayoutDataContext);
+    useEffect(() => {
+        initializeLayout({
+            pageTitle: 'Registration',
+            hideLayout: true,
+            shouldContainerAlignMiddle: true
+        });
+    }, []);
     return <h1>Registration</h1>;
 };
 

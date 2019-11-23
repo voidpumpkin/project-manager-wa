@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { PAGE_PATHS } from '../Router';
-import classNames from 'classnames';
-import { LayoutDataContext } from './LayoutDataContext';
+import clsx from 'clsx';
+import { LayoutDataContext } from './';
 import HouseIcon from '@material-ui/icons/House';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
@@ -22,21 +23,21 @@ const NavList = () => {
     const classes = useStyles();
     const { isMdUp } = useContext(LayoutDataContext);
     return (
-        <List component="nav" className={classNames({ [classes.horizontalList]: isMdUp })}>
-            <ListItem button component="a" href={PAGE_PATHS.LOGIN}>
-                <ListItemIcon className={classNames({ [classes.horizontalListIcon]: isMdUp })}>
+        <List component="nav" className={clsx({ [classes.horizontalList]: isMdUp })}>
+            <ListItem button component={Link} to={PAGE_PATHS.LOGIN}>
+                <ListItemIcon className={clsx({ [classes.horizontalListIcon]: isMdUp })}>
                     <VpnKeyIcon />
                 </ListItemIcon>
                 <ListItemText>Login</ListItemText>
             </ListItem>
-            <ListItem button component="a" href={PAGE_PATHS.REGISTRATION}>
-                <ListItemIcon className={classNames({ [classes.horizontalListIcon]: isMdUp })}>
+            <ListItem button component={Link} to={PAGE_PATHS.REGISTRATION}>
+                <ListItemIcon className={clsx({ [classes.horizontalListIcon]: isMdUp })}>
                     <BorderColorIcon />
                 </ListItemIcon>
                 <ListItemText>Register</ListItemText>
             </ListItem>
-            <ListItem button component="a" href={PAGE_PATHS.HOME}>
-                <ListItemIcon className={classNames({ [classes.horizontalListIcon]: isMdUp })}>
+            <ListItem button component={Link} to={PAGE_PATHS.HOME}>
+                <ListItemIcon className={clsx({ [classes.horizontalListIcon]: isMdUp })}>
                     <HouseIcon />
                 </ListItemIcon>
                 <ListItemText>Home</ListItemText>

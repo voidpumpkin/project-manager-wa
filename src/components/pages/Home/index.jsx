@@ -1,17 +1,18 @@
 import React, { useEffect, useContext } from 'react';
-import { LayoutDataContext } from '../../layout/LayoutDataContext';
+import { LayoutDataContext } from '../../layout';
 import { AuthDataContext } from '../../shared/AuthDataContext';
-
-//components
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
+import { Button, Box, Typography } from '@material-ui/core';
 
 const HomePage = () => {
     const { onLogout } = useContext(AuthDataContext);
-    const { setPageTitle } = useContext(LayoutDataContext);
-    useEffect(() => setPageTitle('Home'), []);
+    const { initializeLayout } = useContext(LayoutDataContext);
+    useEffect(() => {
+        initializeLayout({
+            pageTitle: 'Home'
+        });
+    }, []);
     return (
-        <>
+        <Box flexGrow={1}>
             <Typography variant="h2" component="h2">
                 HomePage
             </Typography>{' '}
@@ -54,7 +55,7 @@ const HomePage = () => {
             <Button variant="contained" color="primary" onClick={() => onLogout()}>
                 Logout
             </Button>
-        </>
+        </Box>
     );
 };
 

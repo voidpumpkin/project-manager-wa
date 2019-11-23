@@ -1,7 +1,5 @@
 import React from 'react';
 import { MUITheme } from './MUITheme';
-
-//components
 import { AuthDataProvider } from './shared/AuthDataContext';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter } from 'react-router-dom';
