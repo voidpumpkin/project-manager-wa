@@ -42,7 +42,8 @@ const RegistrationPage = props => {
     useEffect(() => {
         initializeLayout({
             pageTitle: 'Registration page',
-            hideLayout: true
+            hideLayout: true,
+            containerSize: 'sm'
         });
     }, []);
 

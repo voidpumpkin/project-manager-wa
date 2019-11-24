@@ -74,4 +74,49 @@ const postUserFetch = async args => {
         return { errors };
     }
 };
-export { getUserFetch, postUserFetch };
+
+const getManagedProjectsFetch = async () => {
+    const response = await fetch(process.env.BACKEND_HOST + '/users/me/managed-projects', {
+        credentials: 'include'
+    });
+    const json = await response.json();
+    if (response.ok) {
+        const { data } = json || {};
+        const managedProjects = data.map(project => {
+            const { id, attributes } = project || {};
+            return { id, ...attributes };
+        });
+        return { managedProjects };
+    } else {
+        const { errors } = json || {};
+        if (errors) {
+            return { errors };
+        } else {
+            return { errors: [{ title: `${response.status} ${response.statusText}` }] };
+        }
+    }
+};
+
+const getParticipatedProjectsFetch = async () => {
+    const response = await fetch(process.env.BACKEND_HOST + '/users/me/participated-projects', {
+        credentials: 'include'
+    });
+    const json = await response.json();
+    if (response.ok) {
+        const { data } = json || {};
+        const participatedProjects = data.map(project => {
+            const { id, attributes } = project || {};
+            return { id, ...attributes };
+        });
+        return { participatedProjects };
+    } else {
+        const { errors } = json || {};
+        if (errors) {
+            return { errors };
+        } else {
+            return { errors: [{ title: `${response.status} ${response.statusText}` }] };
+        }
+    }
+};
+
+export { getUserFetch, postUserFetch, getManagedProjectsFetch, getParticipatedProjectsFetch };

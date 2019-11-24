@@ -44,7 +44,8 @@ const LoginPage = () => {
     useEffect(() => {
         initializeLayout({
             pageTitle: 'Login page',
-            hideLayout: true
+            hideLayout: true,
+            containerSize: 'sm'
         });
     }, []);
 

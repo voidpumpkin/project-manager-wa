@@ -18,7 +18,8 @@ const LayoutDataContext = createContext(null);
 
 const initialPageSettings = {
     pageTitle: 'NoTitle',
-    hideLayout: false
+    hideLayout: false,
+    containerSize: 'lg'
 };
 
 const Layout = props => {
@@ -36,11 +37,20 @@ const Layout = props => {
     );
     const theme = useTheme();
     const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
+
+    const [isLoading, setIsLoading] = useState(false);
+
     return (
-        <LayoutDataContext.Provider value={{ pageSettings, initializeLayout, isMdUp }}>
+        <LayoutDataContext.Provider
+            value={{ pageSettings, initializeLayout, isMdUp, isLoading, setIsLoading }}
+        >
             <SnackbarProvider maxSnack={isMdUp ? 3 : 1}>
                 <NavBar />
-                <Container component="main" maxWidth="sm" className={classes.main}>
+                <Container
+                    component="main"
+                    maxWidth={pageSettings.containerSize}
+                    className={classes.main}
+                >
                     {children}
                 </Container>
                 <Footer />

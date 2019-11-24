@@ -3,11 +3,9 @@ import { Link } from 'react-router-dom';
 import { PAGE_PATHS } from '../Router';
 import clsx from 'clsx';
 import { LayoutDataContext } from './';
-import HouseIcon from '@material-ui/icons/House';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import BorderColorIcon from '@material-ui/icons/BorderColor';
 import { ListItem, ListItemIcon, ListItemText, List } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import DashboardIcon from '@material-ui/icons/Dashboard';
 
 const useStyles = makeStyles({
     horizontalList: {
@@ -24,23 +22,11 @@ const NavList = () => {
     const { isMdUp } = useContext(LayoutDataContext);
     return (
         <List component="nav" className={clsx({ [classes.horizontalList]: isMdUp })}>
-            <ListItem button component={Link} to={PAGE_PATHS.LOGIN}>
+            <ListItem button component={Link} to={PAGE_PATHS.DASHBOARD}>
                 <ListItemIcon className={clsx({ [classes.horizontalListIcon]: isMdUp })}>
-                    <VpnKeyIcon />
+                    <DashboardIcon />
                 </ListItemIcon>
-                <ListItemText>Login</ListItemText>
-            </ListItem>
-            <ListItem button component={Link} to={PAGE_PATHS.REGISTRATION}>
-                <ListItemIcon className={clsx({ [classes.horizontalListIcon]: isMdUp })}>
-                    <BorderColorIcon />
-                </ListItemIcon>
-                <ListItemText>Register</ListItemText>
-            </ListItem>
-            <ListItem button component={Link} to={PAGE_PATHS.HOME}>
-                <ListItemIcon className={clsx({ [classes.horizontalListIcon]: isMdUp })}>
-                    <HouseIcon />
-                </ListItemIcon>
-                <ListItemText>Home</ListItemText>
+                <ListItemText>Dashboard</ListItemText>
             </ListItem>
         </List>
     );

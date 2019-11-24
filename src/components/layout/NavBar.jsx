@@ -1,7 +1,16 @@
 import React, { useState, useContext } from 'react';
 import logo from '../../../resources/logo.svg';
 import { LayoutDataContext } from './';
-import { AppBar, Toolbar, Typography, IconButton, Drawer, Hidden, Box } from '@material-ui/core';
+import {
+    AppBar,
+    Toolbar,
+    Typography,
+    IconButton,
+    Drawer,
+    Hidden,
+    Box,
+    LinearProgress
+} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import { NavList } from './NavList';
 import { makeStyles } from '@material-ui/core/styles';
@@ -27,7 +36,8 @@ const useStyles = makeStyles({
 const NavBar = () => {
     const classes = useStyles();
     const {
-        pageSettings: { hideLayout, pageTitle }
+        pageSettings: { hideLayout, pageTitle },
+        isLoading
     } = useContext(LayoutDataContext);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -76,6 +86,7 @@ const NavBar = () => {
                         <NavList />
                     </Hidden>
                 </Toolbar>
+                {isLoading && <LinearProgress color="secondary" />}
             </AppBar>
         </>
     );
