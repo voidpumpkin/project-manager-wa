@@ -9,7 +9,7 @@ import { Button, Box, Typography, Link, CircularProgress } from '@material-ui/co
 import { makeStyles } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import { Snack } from '../../shared/Snack';
+import { pushErrorMessageFactory } from '../../shared/Snack';
 import { LoginForm } from './LoginForm';
 
 const GENERAL_ERROR_MESSAGE = 'An error occured, please try again later';
@@ -44,12 +44,12 @@ const LoginPage = () => {
     useEffect(() => {
         initializeLayout({
             pageTitle: 'Login page',
-            hideLayout: true,
-            shouldContainerAlignMiddle: true
+            hideLayout: true
         });
     }, []);
 
     const { enqueueSnackbar } = useSnackbar();
+    const pushErrorMessage = pushErrorMessageFactory(enqueueSnackbar);
 
     const [formValues, setFormValues] = useState({
         username: '',
@@ -68,18 +68,6 @@ const LoginPage = () => {
     };
 
     const [isShowingErrors, setIsShowingErrors] = useState(false);
-
-    const pushErrorMessage = message => {
-        enqueueSnackbar('', {
-            anchorOrigin: {
-                vertical: 'bottom',
-                horizontal: 'right'
-            },
-            content: function LoginSnack(key) {
-                return <Snack id={key} key={key} variant="error" message={message} />;
-            }
-        });
-    };
 
     const handleFailedLogin = loginResponse => {
         const isUnauthorized = loginResponse.errors.some(err => err.title === 'Unauthorized');
@@ -109,9 +97,8 @@ const LoginPage = () => {
 
     const onClick = async () => {
         if (!isLoading && isValid) {
-            const { username, password } = formValues;
             setIsLoading(true);
-            const loginResponse = await postLoginFetch(username, password);
+            const loginResponse = await postLoginFetch(formValues);
             setIsLoading(false);
             handleLogin(loginResponse);
         }

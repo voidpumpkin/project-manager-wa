@@ -76,4 +76,28 @@ const Snack = React.forwardRef(function Snack(props, ref) {
     );
 });
 
-export { Snack };
+const pushErrorMessageFactory = enqueueSnackbar => message => {
+    enqueueSnackbar('', {
+        anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'right'
+        },
+        content: function LoginSnack(key) {
+            return <Snack id={key} key={key} variant="error" message={message} />;
+        }
+    });
+};
+
+const pushSuccessMessageFactory = enqueueSnackbar => message => {
+    enqueueSnackbar('', {
+        anchorOrigin: {
+            vertical: 'bottom',
+            horizontal: 'right'
+        },
+        content: function LoginSnack(key) {
+            return <Snack id={key} key={key} variant="success" message={message} />;
+        }
+    });
+};
+
+export { Snack, pushErrorMessageFactory, pushSuccessMessageFactory };

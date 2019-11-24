@@ -1,4 +1,5 @@
-const postLoginFetch = async (username, password) => {
+const postLoginFetch = async args => {
+    const { username, password } = args;
     const response = await fetch(process.env.BACKEND_HOST + '/login', {
         method: 'POST',
         body: JSON.stringify({ username, password }),

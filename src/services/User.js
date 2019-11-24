@@ -24,4 +24,54 @@ const getUserFetch = async () => {
         }
     }
 };
-export { getUserFetch };
+
+const postUserFetch = async args => {
+    const { username, password, companyName, firstName, lastName, email, phoneNumber } = args;
+    const attributes = {
+        username,
+        password,
+        companyName,
+        firstName,
+        lastName,
+        email,
+        phoneNumber
+    };
+    const response = await fetch(process.env.BACKEND_HOST + '/users', {
+        method: 'POST',
+        body: JSON.stringify({
+            data: {
+                type: 'users',
+                attributes
+            }
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    });
+    const json = await response.json();
+    if (response.ok) {
+        const { data } = json || {};
+        const { id, attributes } = data || {};
+        const { username, password, companyName, firstName, lastName, email, phoneNumber } =
+            attributes || {};
+        return {
+            id,
+            username,
+            password,
+            companyName,
+            firstName,
+            lastName,
+            email,
+            phoneNumber
+        };
+    } else {
+        const { errors: respErrors } = json || {};
+        const errors = [
+            ...(respErrors || []),
+            { title: `${response.status} ${response.statusText}` }
+        ];
+        return { errors };
+    }
+};
+export { getUserFetch, postUserFetch };

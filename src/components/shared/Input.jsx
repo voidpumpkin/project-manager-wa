@@ -12,9 +12,11 @@ const Input = props => {
         type = 'text',
         endAdornment,
         required = false,
-        formControllProps
+        formControllProps,
+        startAdornment,
+        placeholder
     } = props;
-    const lowerCaseName = name.toLowerCase();
+    const lowerCaseName = name.replace(/\s+/g, '-').toLowerCase();
     return (
         <FormControl {...{ required, error: showError }} {...formControllProps}>
             <InputLabel id={`${lowerCaseName}-input-label`} htmlFor={`${lowerCaseName}-input`}>
@@ -23,7 +25,7 @@ const Input = props => {
             <MUIInput
                 id={`${lowerCaseName}-input`}
                 aria-describedby={`${lowerCaseName}-input-label`}
-                {...{ type, value, onChange, endAdornment }}
+                {...{ type, value, onChange, endAdornment, startAdornment, placeholder }}
             />
             <FormHelperText
                 id={

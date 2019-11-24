@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { PasswordInput } from './PasswordInput';
+import { PasswordInput } from '../../shared/EyePasswordInput';
 import validatejs from 'validate.js';
 import { Input } from '../../shared/Input';
 
@@ -32,8 +32,8 @@ const LoginForm = props => {
 
     const isFieldValid = field => errors[field].length === 0;
 
-    const validateForm = (formValues = formValues) => {
-        const validations = validatejs(formValues, constraints);
+    const validateForm = (argFormValues = formValues) => {
+        const validations = validatejs(argFormValues, constraints);
         const noErrors = {
             username: [],
             password: []
