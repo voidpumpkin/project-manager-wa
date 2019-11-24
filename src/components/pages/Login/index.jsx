@@ -97,7 +97,7 @@ const LoginPage = () => {
     };
 
     const onClick = async () => {
-        if (!isLoading && isValid) {
+        if (!isLoading && isValid()) {
             setIsLoading(true);
             const loginResponse = await postLoginFetch(formValues);
             setIsLoading(false);

@@ -119,4 +119,42 @@ const getParticipatedProjectsFetch = async () => {
     }
 };
 
-export { getUserFetch, postUserFetch, getManagedProjectsFetch, getParticipatedProjectsFetch };
+const patchUserFetch = async args => {
+    const { username, password, companyName, firstName, lastName, email, phoneNumber } = args;
+    const attributes = {
+        username,
+        password,
+        companyName,
+        firstName,
+        lastName,
+        email,
+        phoneNumber
+    };
+    const response = await fetch(process.env.BACKEND_HOST + '/users/me', {
+        method: 'PATCH',
+        body: JSON.stringify({
+            data: {
+                type: 'users',
+                attributes
+            }
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include'
+    });
+    if (response.ok) {
+        return {};
+    } else {
+        const errors = [{ title: `${response.status} ${response.statusText}` }];
+        return { errors };
+    }
+};
+
+export {
+    getUserFetch,
+    postUserFetch,
+    getManagedProjectsFetch,
+    getParticipatedProjectsFetch,
+    patchUserFetch
+};

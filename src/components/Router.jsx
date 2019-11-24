@@ -5,19 +5,22 @@ import { GuestOnlyRoute } from './shared/GuestOnlyRoute';
 import { DashboardPage } from './pages/Dashboard';
 import { LoginPage } from './pages/Login';
 import { RegistrationPage } from './pages/Registration';
+import { ProfilePage } from './pages/Profile';
 
 const PAGE_PATHS = {
     LOGIN: '/login',
     REGISTRATION: '/register',
-    DASHBOARD: '/'
+    DASHBOARD: '/',
+    PROFILE: '/profile'
 };
 
 const Router = () => {
     return (
         <Switch>
-            <GuestOnlyRoute path={PAGE_PATHS.LOGIN} component={LoginPage} />
-            <GuestOnlyRoute path={PAGE_PATHS.REGISTRATION} component={RegistrationPage} />
-            <PrivateRoute path={PAGE_PATHS.DASHBOARD} component={DashboardPage} />
+            <GuestOnlyRoute exact path={PAGE_PATHS.LOGIN} component={LoginPage} />
+            <GuestOnlyRoute exact path={PAGE_PATHS.REGISTRATION} component={RegistrationPage} />
+            <PrivateRoute exact path={PAGE_PATHS.DASHBOARD} component={DashboardPage} />
+            <PrivateRoute exact path={PAGE_PATHS.PROFILE} component={ProfilePage} />
         </Switch>
     );
 };

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { InputAdornment, FormControlLabel, Switch } from '@material-ui/core';
+import { InputAdornment } from '@material-ui/core';
 import validatejs from 'validate.js';
 import { Input } from '../../shared/Input';
 import { SectionBreak } from '../../shared/SectionBreak';
@@ -19,43 +19,48 @@ const useStyles = makeStyles(theme => ({
 
 const constraints = {
     username: {
-        presence: {
-            allowEmpty: false
-        }
+        length: { minimum: 1 }
+    },
+    oldPassword: function() {
+        const [, attributes] = arguments;
+        const password = attributes.password || '';
+        if (password.length > 0)
+            return {
+                presence: {
+                    allowEmpty: false
+                }
+            };
+        return null;
+    },
+    repeatPassword: function() {
+        const [, attributes] = arguments;
+        const password = attributes.password || '';
+        if (password.length > 0)
+            return {
+                presence: {
+                    allowEmpty: false,
+                    equality: 'oldPassword'
+                }
+            };
+        return null;
     },
     password: {
-        presence: {
-            allowEmpty: false
-        }
-    },
-    repeatPassword: {
-        presence: {
-            allowEmpty: false
-        },
-        equality: 'password'
-    },
-    isACompany: {
-        presence: true,
-        type: 'boolean'
+        length: { minimum: 1 }
     },
     companyName: function() {
         const attributes = arguments[1];
         if (!attributes.isACompany) return null;
         return {
             presence: {
-                allowEmpty: false
+                length: { minimum: 1 }
             }
         };
     },
     firstName: {
-        presence: {
-            allowEmpty: false
-        }
+        length: { minimum: 1 }
     },
     lastName: {
-        presence: {
-            allowEmpty: false
-        }
+        length: { minimum: 1 }
     },
     email: {
         email: true
@@ -69,16 +74,26 @@ const constraints = {
 
 const SignUpForm = props => {
     const classes = useStyles();
-    const { isShowingErrors, formValues, setFormValues, errors, setErrors } = props;
+    const {
+        isShowingErrors,
+        formValues,
+        setFormValues,
+        errors,
+        setErrors,
+        updatedValues,
+        setUpdatedValues,
+        initialValues
+    } = props;
 
     const isFieldValid = field => errors[field].length === 0;
 
-    const validateForm = (argFormValues = formValues) => {
+    const validateForm = (argFormValues = updatedValues) => {
         const validations = validatejs(argFormValues, constraints);
         const noErrors = {
             username: [],
             password: [],
             repeatPassword: [],
+            oldPassword: [],
             isACompany: [],
             companyName: [],
             firstName: [],
@@ -95,12 +110,13 @@ const SignUpForm = props => {
     }, []);
 
     const handleChange = field => event => {
-        const newValues =
-            field === 'isACompany'
-                ? { ...formValues, isACompany: !formValues.isACompany }
-                : { ...formValues, [field]: event.target.value };
-        setFormValues(newValues);
-        validateForm(newValues);
+        const newFormValues = { ...formValues, [field]: event.target.value };
+        setFormValues(newFormValues);
+        if (event.target.value !== initialValues[field]) {
+            const newUpdatedValues = { ...updatedValues, [field]: event.target.value };
+            setUpdatedValues(newUpdatedValues);
+            validateForm(newUpdatedValues);
+        }
     };
 
     return (
@@ -108,7 +124,7 @@ const SignUpForm = props => {
             id="login-form"
             className={classes.form}
             action="/"
-            method="POST"
+            method="PATCH"
             onSubmit={e => e.preventDefault()}
             noValidate
         >
@@ -121,18 +137,16 @@ const SignUpForm = props => {
                 value={formValues.username}
                 onChange={handleChange('username')}
                 formControllProps={{ fullWidth: true }}
-                required
             />
             <Input
                 name="Password"
                 type="password"
-                showError={isShowingErrors && !isFieldValid('password')}
-                errorText={errors.password[0]}
+                showError={isShowingErrors && !isFieldValid('oldPassword')}
+                errorText={errors.oldPassword[0]}
                 className={classes.mTop}
-                value={formValues.password}
-                onChange={handleChange('password')}
+                value={formValues.oldPassword}
+                onChange={handleChange('oldPassword')}
                 formControllProps={{ fullWidth: true }}
-                required
             />
             <Input
                 name="Repeat password"
@@ -143,20 +157,18 @@ const SignUpForm = props => {
                 value={formValues.repeatPassword}
                 onChange={handleChange('repeatPassword')}
                 formControllProps={{ fullWidth: true }}
-                required
+            />
+            <Input
+                name="New password"
+                type="password"
+                showError={isShowingErrors && !isFieldValid('password')}
+                errorText={errors.password[0]}
+                className={classes.mTop}
+                value={formValues.password}
+                onChange={handleChange('password')}
+                formControllProps={{ fullWidth: true }}
             />
             <SectionBreak name="Contact information" className={classes.mTop} />
-            <FormControlLabel
-                className={classes.mTop}
-                control={
-                    <Switch
-                        checked={formValues.isACompany}
-                        onChange={handleChange('isACompany')}
-                        value={formValues.isACompany}
-                    />
-                }
-                label="I am a company"
-            />
             {formValues.isACompany && (
                 <Input
                     name="Company name"
@@ -176,7 +188,6 @@ const SignUpForm = props => {
                 value={formValues.firstName}
                 onChange={handleChange('firstName')}
                 formControllProps={{ fullWidth: true }}
-                required
             />
             <Input
                 name="Last name"
@@ -186,7 +197,6 @@ const SignUpForm = props => {
                 value={formValues.lastName}
                 onChange={handleChange('lastName')}
                 formControllProps={{ fullWidth: true }}
-                required
             />
             <Input
                 name="Email"
@@ -197,7 +207,6 @@ const SignUpForm = props => {
                 value={formValues.email}
                 onChange={handleChange('email')}
                 formControllProps={{ fullWidth: true }}
-                required
             />
             <Input
                 name="Phone number"
@@ -207,7 +216,6 @@ const SignUpForm = props => {
                 value={formValues.phoneNumber}
                 onChange={handleChange('phoneNumber')}
                 formControllProps={{ fullWidth: true }}
-                required
                 startAdornment={<InputAdornment position="start">{'+370'}</InputAdornment>}
             />
         </form>

@@ -1,16 +1,14 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext, useState, useRef } from 'react';
 import clsx from 'clsx';
-import { Link as RouterLink } from 'react-router-dom';
 import { LayoutDataContext } from '../../layout';
-import { postUserFetch } from '../../../services/User';
-import { Button, Box, Typography, Link, CircularProgress } from '@material-ui/core';
+import { getUserFetch, patchUserFetch } from '../../../services/User';
+import { Button, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
-import AssignmentIcon from '@material-ui/icons/Assignment';
 import { pushErrorMessageFactory, pushSuccessMessageFactory } from '../../shared/Snack';
 import { SignUpForm } from './SignUpForm';
-
-const GENERAL_ERROR_MESSAGE = 'An error occured, please try again later';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import { AuthDataContext } from '../../shared/AuthDataContext';
 
 const useStyles = makeStyles(theme => ({
     mTop: {
@@ -34,15 +32,15 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const RegistrationPage = props => {
-    const { history: routerHistory } = props;
+const ProfilePage = () => {
     const classes = useStyles();
 
-    const { initializeLayout } = useContext(LayoutDataContext);
+    const { userId } = useContext(AuthDataContext);
+
+    const { initializeLayout, isLoading, setIsLoading } = useContext(LayoutDataContext);
     useEffect(() => {
         initializeLayout({
-            pageTitle: 'Registration page',
-            hideLayout: true,
+            pageTitle: 'Profile',
             containerSize: 'sm'
         });
     }, []);
@@ -51,10 +49,13 @@ const RegistrationPage = props => {
     const pushErrorMessage = pushErrorMessageFactory(enqueueSnackbar);
     const pushSuccessMessage = pushSuccessMessageFactory(enqueueSnackbar);
 
+    const initialValues = useRef({});
+
     const [formValues, setFormValues] = useState({
         username: '',
-        password: '',
+        oldPassword: '',
         repeatPassword: '',
+        password: '',
         isACompany: false,
         companyName: '',
         firstName: '',
@@ -63,10 +64,13 @@ const RegistrationPage = props => {
         phoneNumber: ''
     });
 
+    const [updatedValues, setUpdatedValues] = useState({});
+
     const [errors, setErrors] = useState({
         username: [],
-        password: [],
+        oldPassword: [],
         repeatPassword: [],
+        password: [],
         isACompany: [],
         companyName: [],
         firstName: [],
@@ -75,57 +79,50 @@ const RegistrationPage = props => {
         phoneNumber: []
     });
 
-    const [isLoading, setIsLoading] = useState(false);
-
     const isValid = () => {
         return !Object.keys(errors).some(key => errors[key].length > 0);
     };
 
     const [isShowingErrors, setIsShowingErrors] = useState(false);
 
-    const handleUserPost = async postUserResponse => {
-        const { errors: respErrors } = postUserResponse || {};
-        if (!respErrors) {
-            pushSuccessMessage('Successfuly registered');
-            routerHistory.push('/login');
+    const fetchUser = async () => {
+        const userResponse = await getUserFetch(userId);
+        if (!userResponse.errors) {
+            let values = Object.keys(formValues).reduce((prev, curr) => {
+                const value = userResponse.user[curr] || formValues[curr];
+                return {
+                    ...prev,
+                    [curr]: value
+                };
+            }, {});
+            values.isACompany = !!userResponse.user.companyName;
+            values.password = '';
+            initialValues.current = values;
+            setFormValues(values);
+            setUpdatedValues({});
         } else {
-            if (respErrors.some(err => err.title === 'username already taken')) {
-                setErrors({ ...errors, username: ['Username already taken'] });
-            } else {
-                pushErrorMessage(GENERAL_ERROR_MESSAGE);
-            }
+            pushErrorMessage('Failed to fetch user, try again later.');
         }
+        setIsLoading(false);
     };
 
     const onClick = async () => {
         if (!isLoading && isValid()) {
-            const {
-                username,
-                password,
-                isACompany,
-                companyName: formCompanyName,
-                firstName,
-                lastName,
-                email,
-                phoneNumber
-            } = formValues;
-            const companyName = isACompany ? formCompanyName : undefined;
-            setIsLoading(true);
-            const postUserResponse = await postUserFetch({
-                username,
-                password,
-                isACompany,
-                companyName,
-                firstName,
-                lastName,
-                email,
-                phoneNumber
-            });
-            setIsLoading(false);
-            handleUserPost(postUserResponse);
+            const userResponse = await patchUserFetch(updatedValues);
+            if (!userResponse.errors) {
+                fetchUser();
+                pushSuccessMessage('Successfuly updated');
+            } else {
+                pushErrorMessage('Faled to update, try again later');
+            }
         }
         setIsShowingErrors(true);
     };
+
+    useEffect(() => {
+        setIsLoading(true);
+        fetchUser();
+    }, []);
 
     return (
         <Box flexGrow={1} display="flex" justifyContent="space-between" alignContent="center">
@@ -140,23 +137,19 @@ const RegistrationPage = props => {
                 marginTop="auto"
                 marginBottom="auto"
             >
-                <Box bgcolor="secondary.dark" borderRadius="50%" lineHeight={1} p={1}>
-                    {isLoading ? (
-                        <CircularProgress className={classes.spinner} />
-                    ) : (
-                        <AssignmentIcon />
-                    )}
+                <Box bgcolor="secondary.light" borderRadius="50%" lineHeight={1} p={1}>
+                    <AccountBoxIcon color="common.black" />
                 </Box>
-                <Typography variant="h5" component="h1">
-                    {'Sign up'}
-                </Typography>
                 <SignUpForm
                     {...{
                         isShowingErrors,
                         formValues,
                         setFormValues,
                         errors,
-                        setErrors
+                        setErrors,
+                        updatedValues,
+                        setUpdatedValues,
+                        initialValues: initialValues.current
                     }}
                 />
                 <Button
@@ -166,20 +159,13 @@ const RegistrationPage = props => {
                     className={clsx(classes.mTop, classes.fullWidth)}
                     type="submit"
                     form="login-form"
-                    disabled={isLoading}
+                    disabled={isLoading || Object.keys(updatedValues).length === 0}
                 >
-                    {'Sign up'}
+                    {'Update'}
                 </Button>
-                <Link
-                    component={RouterLink}
-                    className={clsx(classes.mTop, classes.cta)}
-                    to="/login"
-                >
-                    {'Already have an account? Sign in'}
-                </Link>
             </Box>
         </Box>
     );
 };
 
-export { RegistrationPage };
+export { ProfilePage };
