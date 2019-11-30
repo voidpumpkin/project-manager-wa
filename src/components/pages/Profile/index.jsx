@@ -1,14 +1,15 @@
-import React, { useEffect, useContext, useState, useRef } from 'react';
+import React, { useEffect, useContext, useState, useRef, useCallback } from 'react';
 import clsx from 'clsx';
 import { LayoutDataContext } from '../../layout';
-import { getUserFetch, patchUserFetch } from '../../../services/User';
 import { Button, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useSnackbar } from 'notistack';
 import { pushErrorMessageFactory, pushSuccessMessageFactory } from '../../shared/Snack';
 import { SignUpForm } from './SignUpForm';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
-import { AuthDataContext } from '../../shared/AuthDataContext';
+import { DangerZone } from './DangerZone';
+import { UserDataContext } from '../../shared/UserDataContext';
+import { patchUserFetch } from '../../../services/User';
 
 const useStyles = makeStyles(theme => ({
     mTop: {
@@ -22,6 +23,7 @@ const useStyles = makeStyles(theme => ({
         width: '100%'
     },
     formContainer: {
+        marginTop: theme.spacing(2),
         [theme.breakpoints.down('sm')]: {
             backgroundColor: 'inherit'
         }
@@ -35,9 +37,9 @@ const useStyles = makeStyles(theme => ({
 const ProfilePage = () => {
     const classes = useStyles();
 
-    const { userId } = useContext(AuthDataContext);
+    const { user = {}, refetchUser } = useContext(UserDataContext);
 
-    const { initializeLayout, isLoading, setIsLoading } = useContext(LayoutDataContext);
+    const { initializeLayout, isLoading } = useContext(LayoutDataContext);
     useEffect(() => {
         initializeLayout({
             pageTitle: 'Profile',
@@ -46,8 +48,14 @@ const ProfilePage = () => {
     }, []);
 
     const { enqueueSnackbar } = useSnackbar();
-    const pushErrorMessage = pushErrorMessageFactory(enqueueSnackbar);
-    const pushSuccessMessage = pushSuccessMessageFactory(enqueueSnackbar);
+    const pushErrorMessage = useCallback(pushErrorMessageFactory(enqueueSnackbar), [
+        enqueueSnackbar,
+        pushErrorMessageFactory
+    ]);
+    const pushSuccessMessage = useCallback(pushSuccessMessageFactory(enqueueSnackbar), [
+        enqueueSnackbar,
+        pushSuccessMessageFactory
+    ]);
 
     const initialValues = useRef({});
 
@@ -85,47 +93,43 @@ const ProfilePage = () => {
 
     const [isShowingErrors, setIsShowingErrors] = useState(false);
 
-    const fetchUser = async () => {
-        const userResponse = await getUserFetch(userId);
-        if (!userResponse.errors) {
-            let values = Object.keys(formValues).reduce((prev, curr) => {
-                const value = userResponse.user[curr] || formValues[curr];
-                return {
-                    ...prev,
-                    [curr]: value
-                };
-            }, {});
-            values.isACompany = !!userResponse.user.companyName;
-            values.password = '';
-            initialValues.current = values;
-            setFormValues(values);
-            setUpdatedValues({});
-        } else {
-            pushErrorMessage('Failed to fetch user, try again later.');
-        }
-        setIsLoading(false);
-    };
+    useEffect(() => {
+        let values = Object.keys(formValues).reduce((prev, curr) => {
+            const value = user[curr] || formValues[curr];
+            return {
+                ...prev,
+                [curr]: value
+            };
+        }, {});
+        values.isACompany = !!user.companyName;
+        values.password = '';
+        initialValues.current = values;
+        setFormValues(values);
+        setUpdatedValues({});
+    }, [user]);
 
     const onClick = async () => {
         if (!isLoading && isValid()) {
             const userResponse = await patchUserFetch(updatedValues);
             if (!userResponse.errors) {
-                fetchUser();
+                refetchUser();
                 pushSuccessMessage('Successfuly updated');
             } else {
-                pushErrorMessage('Faled to update, try again later');
+                const isUsernameTaken = userResponse.errors.some(
+                    err => err.title === 'username already taken'
+                );
+                if (isUsernameTaken) {
+                    setErrors({ ...errors, username: ['This username is already taken'] });
+                } else {
+                    pushErrorMessage('Faled to update, try again later');
+                }
             }
         }
         setIsShowingErrors(true);
     };
 
-    useEffect(() => {
-        setIsLoading(true);
-        fetchUser();
-    }, []);
-
     return (
-        <Box flexGrow={1} display="flex" justifyContent="space-between" alignContent="center">
+        <Box flexGrow={1} display="flex" flexDirection="column">
             <Box
                 className={classes.formContainer}
                 width="100%"
@@ -138,7 +142,7 @@ const ProfilePage = () => {
                 marginBottom="auto"
             >
                 <Box bgcolor="secondary.light" borderRadius="50%" lineHeight={1} p={1}>
-                    <AccountBoxIcon color="common.black" />
+                    <AccountBoxIcon />
                 </Box>
                 <SignUpForm
                     {...{
@@ -158,12 +162,13 @@ const ProfilePage = () => {
                     onClick={e => onClick(e)}
                     className={clsx(classes.mTop, classes.fullWidth)}
                     type="submit"
-                    form="login-form"
+                    form="user-edit-form"
                     disabled={isLoading || Object.keys(updatedValues).length === 0}
                 >
                     {'Update'}
                 </Button>
             </Box>
+            <DangerZone />
         </Box>
     );
 };

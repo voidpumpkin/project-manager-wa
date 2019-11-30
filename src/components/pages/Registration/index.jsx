@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { Link as RouterLink } from 'react-router-dom';
 import { LayoutDataContext } from '../../layout';
@@ -48,8 +48,14 @@ const RegistrationPage = props => {
     }, []);
 
     const { enqueueSnackbar } = useSnackbar();
-    const pushErrorMessage = pushErrorMessageFactory(enqueueSnackbar);
-    const pushSuccessMessage = pushSuccessMessageFactory(enqueueSnackbar);
+    const pushErrorMessage = useCallback(pushErrorMessageFactory(enqueueSnackbar), [
+        enqueueSnackbar,
+        pushErrorMessageFactory
+    ]);
+    const pushSuccessMessage = useCallback(pushSuccessMessageFactory(enqueueSnackbar), [
+        enqueueSnackbar,
+        pushSuccessMessageFactory
+    ]);
 
     const [formValues, setFormValues] = useState({
         username: '',
@@ -87,12 +93,14 @@ const RegistrationPage = props => {
         const { errors: respErrors } = postUserResponse || {};
         if (!respErrors) {
             pushSuccessMessage('Successfuly registered');
+            setIsLoading(false);
             routerHistory.push('/login');
         } else {
             if (respErrors.some(err => err.title === 'username already taken')) {
                 setErrors({ ...errors, username: ['Username already taken'] });
             } else {
                 pushErrorMessage(GENERAL_ERROR_MESSAGE);
+                setIsLoading(false);
             }
         }
     };
@@ -165,7 +173,7 @@ const RegistrationPage = props => {
                     onClick={e => onClick(e)}
                     className={clsx(classes.mTop, classes.fullWidth)}
                     type="submit"
-                    form="login-form"
+                    form="register-form"
                     disabled={isLoading}
                 >
                     {'Sign up'}

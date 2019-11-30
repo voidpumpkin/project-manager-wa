@@ -1,4 +1,5 @@
 import React, { createContext, useState, useMemo, useCallback } from 'react';
+import { postLogoutFetch } from '../../services/Auth';
 
 const AuthDataContext = createContext(null);
 
@@ -7,10 +8,16 @@ const initialAuthData = localStorage['userId'] ? parseInt(localStorage['userId']
 const AuthDataProvider = props => {
     const [userId, setUserId] = useState(initialAuthData);
 
-    const onLogout = useCallback(() => {
-        localStorage.removeItem('userId');
-        setUserId(undefined);
-    }, [setUserId]);
+    const onLogout = useCallback(
+        (noFetch = false) => {
+            if (!noFetch) {
+                postLogoutFetch();
+            }
+            localStorage.removeItem('userId');
+            setUserId(undefined);
+        },
+        [setUserId]
+    );
 
     const onLogin = useCallback(
         userId => {

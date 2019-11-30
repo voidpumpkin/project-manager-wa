@@ -105,7 +105,7 @@ const SignUpForm = props => {
 
     return (
         <form
-            id="login-form"
+            id="register-form"
             className={classes.form}
             action="/"
             method="POST"

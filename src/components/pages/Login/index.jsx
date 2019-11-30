@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from 'react';
+import React, { useEffect, useContext, useState, useCallback } from 'react';
 import clsx from 'clsx';
 import { Link as RouterLink } from 'react-router-dom';
 import { LayoutDataContext } from '../../layout';
@@ -11,8 +11,9 @@ import { useSnackbar } from 'notistack';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { pushErrorMessageFactory } from '../../shared/Snack';
 import { LoginForm } from './LoginForm';
+import { UserDataContext } from '../../shared/UserDataContext';
 
-const GENERAL_ERROR_MESSAGE = 'An error occured, please try again later';
+const GENERAL_ERROR_MESSAGE = 'Failed to login, please try again later';
 
 const useStyles = makeStyles(theme => ({
     mTop: {
@@ -39,6 +40,7 @@ const useStyles = makeStyles(theme => ({
 const LoginPage = () => {
     const classes = useStyles();
     const { onLogin } = useContext(AuthDataContext);
+    const { setUser } = useContext(UserDataContext);
 
     const { initializeLayout } = useContext(LayoutDataContext);
     useEffect(() => {
@@ -50,7 +52,10 @@ const LoginPage = () => {
     }, []);
 
     const { enqueueSnackbar } = useSnackbar();
-    const pushErrorMessage = pushErrorMessageFactory(enqueueSnackbar);
+    const pushErrorMessage = useCallback(pushErrorMessageFactory(enqueueSnackbar), [
+        enqueueSnackbar,
+        pushErrorMessageFactory
+    ]);
 
     const [formValues, setFormValues] = useState({
         username: '',
@@ -86,6 +91,7 @@ const LoginPage = () => {
             setIsLoading(false);
             if (!userResponse.errors) {
                 const { user } = userResponse || {};
+                setUser(user);
                 const { id } = user || {};
                 onLogin(id);
             } else {

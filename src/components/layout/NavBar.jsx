@@ -36,7 +36,7 @@ const useStyles = makeStyles({
 const NavBar = () => {
     const classes = useStyles();
     const {
-        pageSettings: { hideLayout, pageTitle },
+        pageSettings: { hideLayout, pageTitle, hidePageTitle },
         isLoading
     } = useContext(LayoutDataContext);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -76,11 +76,13 @@ const NavBar = () => {
                                 className={classes.logo}
                             ></img>
                         </Box>
-                    </Hidden>{' '}
+                    </Hidden>
                     <Box flexGrow={1} ml={1}>
-                        <Typography variant="h6" component="h1">
-                            {pageTitle}
-                        </Typography>
+                        {!hidePageTitle && (
+                            <Typography variant="h6" component="h1">
+                                {pageTitle}
+                            </Typography>
+                        )}
                     </Box>
                     <Hidden smDown>
                         <NavList />

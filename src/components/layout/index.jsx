@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { SnackbarProvider } from 'notistack';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { UserDataProvider } from '../shared/UserDataContext';
 
 const useStyles = makeStyles({
     main: {
@@ -18,6 +19,7 @@ const LayoutDataContext = createContext(null);
 
 const initialPageSettings = {
     pageTitle: 'NoTitle',
+    hidePageTitle: false,
     hideLayout: false,
     containerSize: 'lg'
 };
@@ -45,15 +47,17 @@ const Layout = props => {
             value={{ pageSettings, initializeLayout, isMdUp, isLoading, setIsLoading }}
         >
             <SnackbarProvider maxSnack={isMdUp ? 3 : 1}>
-                <NavBar />
-                <Container
-                    component="main"
-                    maxWidth={pageSettings.containerSize}
-                    className={classes.main}
-                >
-                    {children}
-                </Container>
-                <Footer />
+                <UserDataProvider>
+                    <NavBar />
+                    <Container
+                        component="main"
+                        maxWidth={pageSettings.containerSize}
+                        className={classes.main}
+                    >
+                        {children}
+                    </Container>
+                    <Footer />
+                </UserDataProvider>
             </SnackbarProvider>
         </LayoutDataContext.Provider>
     );

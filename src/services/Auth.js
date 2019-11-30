@@ -8,7 +8,6 @@ const postLoginFetch = async args => {
         },
         credentials: 'include'
     });
-
     if (response.ok) {
         return {};
     } else {
@@ -19,4 +18,16 @@ const postLoginFetch = async args => {
         }
     }
 };
-export { postLoginFetch };
+const postLogoutFetch = async () => {
+    const response = await fetch(process.env.BACKEND_HOST + '/logout', {
+        method: 'POST',
+        credentials: 'include'
+    });
+
+    if (response.ok) {
+        return {};
+    } else {
+        return { errors: [{ title: `${response.status} ${response.statusText}` }] };
+    }
+};
+export { postLoginFetch, postLogoutFetch };

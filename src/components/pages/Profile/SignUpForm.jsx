@@ -121,7 +121,7 @@ const SignUpForm = props => {
 
     return (
         <form
-            id="login-form"
+            id="user-edit-form"
             className={classes.form}
             action="/"
             method="PATCH"

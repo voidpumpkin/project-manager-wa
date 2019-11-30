@@ -13,7 +13,12 @@ const MUITheme = createMuiTheme({
             light: '#ff79b0',
             main: '#ff4081',
             dark: '#c60055',
-            contrastText: '#000000'
+            contrastText: '#000000',
+            nesting: []
+        },
+        background: {
+            paper: '#303030',
+            default: '#1D1D1D'
         }
     }
 });
