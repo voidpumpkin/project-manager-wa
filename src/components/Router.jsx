@@ -7,13 +7,15 @@ import { LoginPage } from './pages/Login';
 import { RegistrationPage } from './pages/Registration';
 import { ProfilePage } from './pages/Profile';
 import { ProjectPage } from './pages/Project';
+import { TaskPage } from './pages/Task';
 
 const PAGE_PATHS = {
     LOGIN: '/login',
     REGISTRATION: '/register',
     DASHBOARD: '/',
     PROFILE: '/profile',
-    PROJECT: '/project'
+    PROJECT: '/project',
+    TASK: '/task'
 };
 
 const Router = () => {
@@ -24,6 +26,7 @@ const Router = () => {
             <PrivateRoute exact path={PAGE_PATHS.DASHBOARD} component={DashboardPage} />
             <PrivateRoute exact path={PAGE_PATHS.PROFILE} component={ProfilePage} />
             <PrivateRoute exact path={PAGE_PATHS.PROJECT + '/:projectId'} component={ProjectPage} />
+            <PrivateRoute exact path={PAGE_PATHS.TASK + '/:taskId'} component={TaskPage} />
         </Switch>
     );
 };

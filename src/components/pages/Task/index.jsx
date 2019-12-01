@@ -4,14 +4,16 @@ import { Box, Typography } from '@material-ui/core';
 import { useSnackbar } from 'notistack';
 import { pushErrorMessageFactory } from '../../shared/Snack';
 import { makeStyles } from '@material-ui/styles';
-import { getProjectFetch } from '../../../services/Project';
-import ImportContactsIcon from '@material-ui/icons/ImportContacts';
+import { Assignment as AssignmentIcon } from '@material-ui/icons';
 import { Title } from './Title';
 import { Details } from './Details';
 import clsx from 'clsx';
-import { AuthDataContext } from '../../shared/AuthDataContext';
-import { Manager } from './Manager';
-import { TaskList } from './TaskList';
+import { Assignee } from './Assignee';
+import { SubTaskList } from './SubTaskList';
+import { getTaskFetch } from '../../../services/Task';
+import { Project } from './Project';
+import { getProjectFetch } from '../../../services/Project';
+import { Status } from './Status';
 
 const useStyles = makeStyles(theme => ({
     sectionTitle: {
@@ -39,22 +41,20 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-const ProjectPage = props => {
-    const { match } = props;
+const TaskPage = props => {
+    const { match, history: routerHistory } = props;
     const { params } = match || {};
-    const { projectId } = params || {};
+    const { taskId } = params || {};
 
     const classes = useStyles();
     const { initializeLayout, setIsLoading, isLoading } = useContext(LayoutDataContext);
     useEffect(() => {
         initializeLayout({
-            pageTitle: 'Project page',
+            pageTitle: 'Task page',
             hidePageTitle: true,
             containerSize: 'sm'
         });
     }, []);
-
-    const { userId } = useContext(AuthDataContext);
 
     const { enqueueSnackbar } = useSnackbar();
     const pushErrorMessage = useCallback(pushErrorMessageFactory(enqueueSnackbar), [
@@ -62,50 +62,70 @@ const ProjectPage = props => {
         pushErrorMessageFactory
     ]);
 
+    const [task, setTask] = useState({});
     const [project, setProject] = useState({});
-    const [isManager, setIsManager] = useState(false);
 
     const handleResponse = response => {
         if (!response.errors) {
-            const { project } = response;
-            setProject(project);
-            setIsManager(project.managerId === userId);
+            const { task } = response;
+            setTask(task);
         } else {
-            pushErrorMessage(`Failed to fetch project, try again later.`);
+            pushErrorMessage(`Failed to fetch task, try again later.`);
         }
     };
 
-    const refetchProject = useCallback(async () => {
+    useEffect(() => {
+        if (task?.projectId) {
+            (async () => {
+                const response = await getProjectFetch(task?.projectId);
+                if (!response.errors) {
+                    const { project } = response;
+                    setProject(project);
+                } else {
+                    response.errors.forEach(err => {
+                        pushErrorMessage(err.title);
+                    });
+                }
+            })();
+        }
+    }, [task.projectId]);
+
+    const refetchTask = useCallback(async () => {
         setIsLoading(true);
-        const response = await getProjectFetch(projectId);
+        const response = await getTaskFetch(taskId);
         handleResponse(response);
         setIsLoading(false);
-    }, [handleResponse, setIsLoading, getProjectFetch]);
+    }, [handleResponse, setIsLoading, getTaskFetch]);
 
     useEffect(() => {
-        refetchProject();
-    }, []);
-    const { title, id, details, managerId, participators } = project;
+        refetchTask();
+    }, [taskId]);
+    const { title, id, details, assigneeId, projectId, isDone } = task;
+    const { participators, title: projectTitle } = project;
+
     const fieldProps = {
-        refetchProject,
+        refetchTask,
         enqueueSnackbar,
         isLoading,
         setIsLoading,
-        isManager,
-        projectId: id
+        taskId: id
     };
     return (
         <Box flexGrow={1} width="100%">
             <Typography color="textPrimary" className={clsx(classes.mTop1, classes.flex)}>
-                <ImportContactsIcon color="primary" className={classes.icon} />
-                Project
+                <AssignmentIcon color="secondary" className={classes.icon} />
+                Task
             </Typography>
             <Title className={classes.input} {...{ ...fieldProps, title }} />
-            <Manager {...{ ...fieldProps, managerId, participators }} />
+            <Box display="flex">
+                <Assignee {...{ ...fieldProps, assigneeId, participators }} />
+                <Status {...{ ...fieldProps, taskId: id, isDone }} />
+            </Box>
+            <Project {...{ title: projectTitle, projectId, routerHistory }} />
             <Details className={classes.input} {...{ ...fieldProps, details }} />
-            <TaskList tasks={project.tasks} taskCount={project.taskCount} />
+            <SubTaskList tasks={task.subTasks} taskCount={task.subTaskCount} />
         </Box>
     );
 };
 
-export { ProjectPage };
+export { TaskPage };

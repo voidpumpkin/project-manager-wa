@@ -1,16 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { TextField as MUITextField } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/styles';
 import { pushErrorMessageFactory } from '../../shared/Snack';
 import AutocompleteMUI from '@material-ui/lab/Autocomplete';
 import { Close as CloseIcon } from '@material-ui/icons';
-import { patchProjectFetch } from '../../../services/Project';
 import clsx from 'clsx';
+import { patchTaskFetch } from '../../../services/Task';
 
 const useStyles = makeStyles(theme => ({
     input: {
         minWidth: '144px',
-        ...theme.typography.body1,
         padding: theme.spacing(1)
     },
     focused: {
@@ -21,8 +20,7 @@ const useStyles = makeStyles(theme => ({
         marginLeft: '0'
     },
     label: {
-        ...theme.typography.body1,
-        color: theme.palette.primary.dark + ' !important',
+        color: theme.palette.secondary.main + ' !important',
         marginTop: theme.spacing(1)
     },
     disabled: {
@@ -50,81 +48,70 @@ const TextField = withStyles(theme => ({
     }
 }))(MUITextField);
 
-const Manager = props => {
-    const {
-        projectId,
-        managerId = '',
-        refetchProject,
-        enqueueSnackbar,
-        isLoading,
-        setIsLoading,
-        isManager,
-        participators = []
-    } = props;
+const options = [
+    { title: 'Completed', value: true },
+    { title: 'Not completed', value: false }
+];
+
+const Status = props => {
+    const { taskId, refetchTask, enqueueSnackbar, isLoading, setIsLoading, isDone = false } = props;
     const classes = useStyles();
 
-    const managerValue = participators.find(e => e.id === managerId) || {
-        id: managerId,
-        username: 'Nobody'
-    };
+    const currentOption = options.find(e => e.value === isDone);
 
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState(currentOption);
     const [isClosable, setIsClosable] = useState(false);
-
-    useEffect(() => {
-        setValue(managerValue);
-    }, [participators]);
 
     const pushErrorMessage = useCallback(pushErrorMessageFactory(enqueueSnackbar), [
         enqueueSnackbar,
         pushErrorMessageFactory
     ]);
 
-    const handleClose = () => {
-        setIsClosable(false);
-    };
+    useEffect(() => {
+        setValue(currentOption);
+    }, [isDone]);
 
     const handleChange = async (event, value) => {
-        const hasChanged = value.id !== managerId;
+        const hasChanged = isDone !== value.value;
         if (!isLoading && hasChanged) {
             setIsLoading(true);
-            const response = await patchProjectFetch({ id: projectId, managerId: value.id });
+            const response = await patchTaskFetch({ id: taskId, isDone: value.value });
             setIsLoading(false);
             if (!response.errors) {
-                refetchProject();
+                refetchTask();
+                setValue(value);
             } else {
                 response.errors.forEach(err => {
                     pushErrorMessage(err.title);
+                    setValue(currentOption);
                 });
             }
-            setValue(value);
+        } else {
+            setValue(currentOption);
         }
-        setValue(managerValue);
     };
 
     const handleOpen = () => {
         setIsClosable(true);
     };
+    const handleClose = () => {
+        setIsClosable(false);
+    };
 
     const inputProps = {
-        id: 'combo-box-demo',
-        options: participators,
-        getOptionLabel: option => option.username,
+        id: 'status-autocomplete',
+        options: options,
+        getOptionLabel: option => option.title,
         renderInput: function TextFieldComponent(params) {
             return (
                 <TextField
                     {...params}
-                    className={clsx(classes.input, { [classes.disabled]: !isManager })}
-                    id="manager-select"
-                    label="Manager"
+                    className={clsx(classes.input)}
+                    id="status-select"
+                    label="Status"
+                    color="secondary"
                     InputLabelProps={{
                         className: classes.label
-                    }}
-                    {...{
-                        [!isManager ? 'InputProps' : undefined]: {
-                            className: clsx({ [classes.disabled]: !isManager }),
-                            title: value?.username
-                        }
                     }}
                 />
             );
@@ -140,18 +127,14 @@ const Manager = props => {
 
     return (
         <form
-            id="manager-form"
+            id="status-form"
             action="/"
             method="PATCH"
             onSubmit={e => e.preventDefault()}
             noValidate
         >
-            {isManager && participators.length > 1 ? (
-                <Autocomplete {...inputProps} />
-            ) : (
-                <AutocompleteMUI {...{ ...inputProps, disabled: true }} />
-            )}
+            <Autocomplete {...inputProps} />
         </form>
     );
 };
-export { Manager };
+export { Status };

@@ -4,13 +4,12 @@ import { makeStyles, withStyles } from '@material-ui/styles';
 import { pushErrorMessageFactory } from '../../shared/Snack';
 import AutocompleteMUI from '@material-ui/lab/Autocomplete';
 import { Close as CloseIcon } from '@material-ui/icons';
-import { patchProjectFetch } from '../../../services/Project';
 import clsx from 'clsx';
+import { patchTaskFetch } from '../../../services/Task';
 
 const useStyles = makeStyles(theme => ({
     input: {
         minWidth: '144px',
-        ...theme.typography.body1,
         padding: theme.spacing(1)
     },
     focused: {
@@ -21,8 +20,7 @@ const useStyles = makeStyles(theme => ({
         marginLeft: '0'
     },
     label: {
-        ...theme.typography.body1,
-        color: theme.palette.primary.dark + ' !important',
+        color: theme.palette.secondary.main + ' !important',
         marginTop: theme.spacing(1)
     },
     disabled: {
@@ -50,29 +48,32 @@ const TextField = withStyles(theme => ({
     }
 }))(MUITextField);
 
-const Manager = props => {
+const Assignee = props => {
     const {
-        projectId,
-        managerId = '',
-        refetchProject,
+        taskId,
+        refetchTask,
         enqueueSnackbar,
         isLoading,
         setIsLoading,
-        isManager,
+        assigneeId,
         participators = []
     } = props;
     const classes = useStyles();
 
-    const managerValue = participators.find(e => e.id === managerId) || {
-        id: managerId,
-        username: 'Nobody'
+    const getAssigneeValue = () => {
+        return (
+            participators.find(e => e.id === assigneeId) || {
+                id: -1,
+                username: 'Nobody'
+            }
+        );
     };
 
-    const [value, setValue] = useState(null);
+    const [value, setValue] = useState(getAssigneeValue());
     const [isClosable, setIsClosable] = useState(false);
 
     useEffect(() => {
-        setValue(managerValue);
+        setValue(getAssigneeValue());
     }, [participators]);
 
     const pushErrorMessage = useCallback(pushErrorMessageFactory(enqueueSnackbar), [
@@ -80,49 +81,53 @@ const Manager = props => {
         pushErrorMessageFactory
     ]);
 
-    const handleClose = () => {
-        setIsClosable(false);
-    };
-
     const handleChange = async (event, value) => {
-        const hasChanged = value.id !== managerId;
+        const hasChanged = value.id !== assigneeId;
         if (!isLoading && hasChanged) {
             setIsLoading(true);
-            const response = await patchProjectFetch({ id: projectId, managerId: value.id });
+            const response = await patchTaskFetch({ id: taskId, assigneeId: value.id });
             setIsLoading(false);
             if (!response.errors) {
-                refetchProject();
+                refetchTask();
+                setValue(value);
             } else {
                 response.errors.forEach(err => {
                     pushErrorMessage(err.title);
+                    setValue(getAssigneeValue());
                 });
             }
+        } else {
             setValue(value);
         }
-        setValue(managerValue);
     };
 
     const handleOpen = () => {
         setIsClosable(true);
     };
+    const handleClose = () => {
+        setIsClosable(false);
+    };
 
     const inputProps = {
-        id: 'combo-box-demo',
+        id: 'asignee-autocomplete',
         options: participators,
         getOptionLabel: option => option.username,
         renderInput: function TextFieldComponent(params) {
             return (
                 <TextField
                     {...params}
-                    className={clsx(classes.input, { [classes.disabled]: !isManager })}
-                    id="manager-select"
-                    label="Manager"
+                    className={clsx(classes.input, {
+                        [classes.disabled]: participators.length < 1
+                    })}
+                    id="asignee-select"
+                    label="Asignee"
+                    color="secondary"
                     InputLabelProps={{
                         className: classes.label
                     }}
                     {...{
-                        [!isManager ? 'InputProps' : undefined]: {
-                            className: clsx({ [classes.disabled]: !isManager }),
+                        [participators.length < 1 ? 'InputProps' : undefined]: {
+                            className: classes.disabled,
                             title: value?.username
                         }
                     }}
@@ -140,13 +145,13 @@ const Manager = props => {
 
     return (
         <form
-            id="manager-form"
+            id="asignee-form"
             action="/"
             method="PATCH"
             onSubmit={e => e.preventDefault()}
             noValidate
         >
-            {isManager && participators.length > 1 ? (
+            {participators.length > 1 ? (
                 <Autocomplete {...inputProps} />
             ) : (
                 <AutocompleteMUI {...{ ...inputProps, disabled: true }} />
@@ -154,4 +159,4 @@ const Manager = props => {
         </form>
     );
 };
-export { Manager };
+export { Assignee };

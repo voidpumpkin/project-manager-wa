@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
     link: {}
 }));
 
-const Task = props => {
+const SubTask = props => {
     const { task = {}, color = '', _subTaskLevel = -1 } = props;
     const { title, subTasks } = task;
     const classes = useStyles();
@@ -61,7 +61,7 @@ const Task = props => {
                 <Collapse component="li" in={open} timeout="auto">
                     <List disablePadding dense className={classes.list}>
                         {subTasks.map((e, i) => (
-                            <Task key={i} color={darkerColor} task={e} />
+                            <SubTask key={i} color={darkerColor} task={e} />
                         ))}
                     </List>
                 </Collapse>
@@ -69,4 +69,4 @@ const Task = props => {
         </>
     );
 };
-export { Task };
+export { SubTask };

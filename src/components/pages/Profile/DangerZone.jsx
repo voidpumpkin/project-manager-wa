@@ -112,7 +112,6 @@ const DangerZone = () => {
                     label="I do understand that all my Projects, Tasks and User data WILL be deleted."
                     labelPlacement="end"
                 />
-
                 <Button
                     variant="contained"
                     color="primary"

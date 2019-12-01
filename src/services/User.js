@@ -97,6 +97,28 @@ const getManagedProjectsFetch = async () => {
     }
 };
 
+const getTasksFetch = async () => {
+    const response = await fetch(process.env.BACKEND_HOST + '/users/me/tasks', {
+        credentials: 'include'
+    });
+    const json = await response.json();
+    if (response.ok) {
+        const { data } = json || {};
+        const tasks = data.map(project => {
+            const { id, attributes } = project || {};
+            return { id, ...attributes };
+        });
+        return { tasks };
+    } else {
+        const { errors } = json || {};
+        if (errors) {
+            return { errors };
+        } else {
+            return { errors: [{ title: `${response.status} ${response.statusText}` }] };
+        }
+    }
+};
+
 const getParticipatedProjectsFetch = async () => {
     const response = await fetch(process.env.BACKEND_HOST + '/users/me/participated-projects', {
         credentials: 'include'
@@ -174,5 +196,6 @@ export {
     getManagedProjectsFetch,
     getParticipatedProjectsFetch,
     patchUserFetch,
-    deleteUserFetch
+    deleteUserFetch,
+    getTasksFetch
 };

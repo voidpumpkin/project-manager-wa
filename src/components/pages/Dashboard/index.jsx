@@ -1,7 +1,11 @@
 import React, { useEffect, useContext, useState, useCallback } from 'react';
 import { LayoutDataContext } from '../../layout';
 import { Box, Grid, Typography, useTheme, useMediaQuery } from '@material-ui/core';
-import { getManagedProjectsFetch, getParticipatedProjectsFetch } from '../../../services/User';
+import {
+    getManagedProjectsFetch,
+    getParticipatedProjectsFetch,
+    getTasksFetch
+} from '../../../services/User';
 import { useSnackbar } from 'notistack';
 import { pushErrorMessageFactory } from '../../shared/Snack';
 import { ProjectCard } from './ProjectCard';
@@ -9,6 +13,7 @@ import { makeStyles } from '@material-ui/styles';
 import { titleize } from 'underscore.string';
 import clsx from 'clsx';
 import { UserDataContext } from '../../shared/UserDataContext';
+import { TaskCard } from './TaskCard';
 
 const useStyles = makeStyles(theme => ({
     centerText: { textAlign: 'center' },
@@ -45,10 +50,15 @@ const DashboardPage = props => {
 
     const [managedProjects, setManagedProjects] = useState([]);
     const [participatedProjects, setParticipatedProjects] = useState([]);
+    const [tasks, setTasks] = useState([]);
     const [user, setUser] = useState({});
 
     const linkToProject = id => {
         routerHistory.push(`/project/${id}`);
+    };
+
+    const linkToTask = id => {
+        routerHistory.push(`/task/${id}`);
     };
 
     useEffect(() => {
@@ -63,13 +73,16 @@ const DashboardPage = props => {
         setIsLoading(true);
         (async () => {
             const managedProjectsResponse = await getManagedProjectsFetch();
-            const participatedProjectsPresponse = await getParticipatedProjectsFetch();
+            const participatedProjectsResponse = await getParticipatedProjectsFetch();
+            const tasksResponse = await getTasksFetch();
             const fetchedUser = await refetchUser();
             handleResponse('managedProjects', setManagedProjects)(managedProjectsResponse);
             handleResponse(
                 'participatedProjects',
                 setParticipatedProjects
-            )(participatedProjectsPresponse);
+            )(participatedProjectsResponse);
+            setUser(fetchedUser);
+            handleResponse('tasks', setTasks)(tasksResponse);
             setUser(fetchedUser);
             setIsLoading(false);
         })();
@@ -86,7 +99,7 @@ const DashboardPage = props => {
     }, [userName]);
 
     return (
-        <Box className={classes.container} flexGrow={1}>
+        <Box className={classes.container} flexGrow={1} width="100%">
             {!isLoading && (
                 <>
                     {!!managedProjects.length && (
@@ -134,6 +147,30 @@ const DashboardPage = props => {
                                 {participatedProjects.map((project, i) => (
                                     <Grid key={i} item>
                                         <ProjectCard {...{ project, linkToProject }} />
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        </>
+                    )}
+                    {!!tasks.length && (
+                        <>
+                            <Typography
+                                className={clsx(classes.sectionTitle, {
+                                    [classes.centerText]: isSmallMobile
+                                })}
+                                variant="h5"
+                            >
+                                {"Tasks you're working on"}
+                            </Typography>
+                            <Grid
+                                className={classes.mBot2}
+                                container
+                                spacing={2}
+                                justify={isSmallMobile ? 'center' : undefined}
+                            >
+                                {tasks.map((task, i) => (
+                                    <Grid key={i} item>
+                                        <TaskCard {...{ task, linkToTask }} />
                                     </Grid>
                                 ))}
                             </Grid>

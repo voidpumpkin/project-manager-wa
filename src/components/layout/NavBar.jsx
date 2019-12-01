@@ -14,6 +14,8 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import { NavList } from './NavList';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link } from 'react-router-dom';
+import { PAGE_PATHS } from '../Router';
 
 const useStyles = makeStyles({
     logo: {
@@ -50,7 +52,13 @@ const NavBar = () => {
     return hideLayout ? null : (
         <>
             <Drawer open={isDrawerOpen} onClose={toggleDrawer(false)}>
-                <Box className={classes.logoBottomBorder} width="16em" p={1}>
+                <Box
+                    component={Link}
+                    to={PAGE_PATHS.DASHBOARD}
+                    className={classes.logoBottomBorder}
+                    width="16em"
+                    p={1}
+                >
                     <img src={logo} alt="Project manager logo" className={classes.drawerLogo}></img>
                 </Box>
                 <NavList />
@@ -69,7 +77,13 @@ const NavBar = () => {
                         </IconButton>
                     </Hidden>
                     <Hidden smDown>
-                        <Box className={classes.logoRightBorder} width="16em" p={1}>
+                        <Box
+                            component={Link}
+                            to={PAGE_PATHS.DASHBOARD}
+                            className={classes.logoRightBorder}
+                            width="16em"
+                            p={1}
+                        >
                             <img
                                 src={logo}
                                 alt="Project manager logo"
